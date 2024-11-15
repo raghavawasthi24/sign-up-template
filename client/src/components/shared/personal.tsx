@@ -13,11 +13,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { Calendar } from "../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 
 const FormSchema = z.object({
   firstName: z.string().min(2, {
@@ -27,31 +28,38 @@ const FormSchema = z.object({
     message: "Username must be at least 2 characters.",
   }),
   dob: z.date({
-    message: "Username must be at least 2 characters.",
+    message: "Can't be empty",
   }),
   email: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+    message: "Wrong email format",
   }),
-  phoneNo: z.string().min(2, {
+  phoneNo: z.string().min(10, {
     message: "Username must be at least 2 characters.",
   }),
 });
 
 interface PersonalProps {
-  handleBack: () => void;
   handleNext: () => void;
+  formValues: any;
+  setFormValues: any;
 }
 
-export const Personal = ({ handleBack, handleNext }: PersonalProps) => {
+export const Personal = ({ handleNext,formValues, setFormValues  }: PersonalProps) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: formValues
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    setFormValues({...formValues, ...data});
     handleNext();
-    handleBack();
-    console.log(data);
   }
+
+  useEffect(() => {
+    console.log("formValues", formValues
+    );
+  }, []
+  );
 
   return (
     <Form {...form}>
@@ -64,7 +72,7 @@ export const Personal = ({ handleBack, handleNext }: PersonalProps) => {
               <FormItem>
                 <FormLabel>First Name</FormLabel>
                 <FormControl>
-                  <Input {...field} className="w-[240px]"/>
+                  <Input {...field} placeholder="John" className="w-[240px]"/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -78,7 +86,7 @@ export const Personal = ({ handleBack, handleNext }: PersonalProps) => {
               <FormItem>
                 <FormLabel>Last Name</FormLabel>
                 <FormControl>
-                  <Input {...field}  className="w-[240px]"/>
+                  <Input {...field} placeholder="Doe"  className="w-[240px]"/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -136,7 +144,7 @@ export const Personal = ({ handleBack, handleNext }: PersonalProps) => {
               <FormItem>
                 <FormLabel>Phone No</FormLabel>
                 <FormControl>
-                  <Input {...field}  className="w-[240px]"/>
+                  <Input {...field} placeholder="999999" type="number"  className="w-[240px]"/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -151,14 +159,14 @@ export const Personal = ({ handleBack, handleNext }: PersonalProps) => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input {...field}  className="w-[240px]"/>
+                <Input {...field} placeholder="johndoe@email.com"  className="w-[240px]"/>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button type="submit">Next</Button>
+        <Button type="submit" className="self-end">Next</Button>
       </form>
     </Form>
   );

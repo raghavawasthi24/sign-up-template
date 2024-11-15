@@ -6,22 +6,24 @@ import { Personal } from "../personal";
 import { Account } from "../business";
 import { Preferences } from "../preserences";
 
-function getStepContent(step: number, handleBack: () => void, handleNext: () => void) {
+function getStepContent(step: number, handleBack: () => void, handleNext: () => void, formValues: any, setFormValues: any) {
     switch (step) {
         case 1:
-            return <Personal handleBack={handleBack} handleNext={handleNext}/>;
+            return <Personal handleNext={handleNext} formValues={formValues} setFormValues= {setFormValues}/>;
         case 2:
-            return <Account handleBack={handleBack} handleNext={handleNext}/>;
+            return <Account handleBack={handleBack} handleNext={handleNext} formValues={formValues} setFormValues= {setFormValues}/>;
         case 3:
-            return <Preferences />;
+            return <Preferences handleBack={handleBack} handleNext={handleNext} formValues={formValues} setFormValues= {setFormValues}/>;
         default:
             return "Unknown step";
     }
 }
 
+
 const HookMultiStepForm = () => {
   const [activeStep, setActiveStep] = useState(1);
   const [erroredInputName, setErroredInputName] = useState("");
+  const [formValues, setFormValues] = useState({});
   // focus errored input on submit
   useEffect(() => {
     const erroredInputElement =
@@ -46,7 +48,7 @@ const HookMultiStepForm = () => {
     <div className="flex min-h-screen justify-center items-center">
       <div className="w-1/3">
         <StepperIndicator activeStep={activeStep} />
-            {getStepContent(activeStep, handleBack, handleNext)}
+            {getStepContent(activeStep, handleBack, handleNext, formValues, setFormValues)}
       </div>
     </div>
   );

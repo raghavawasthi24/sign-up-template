@@ -13,152 +13,126 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
-import { format } from "date-fns";
-import { Calendar } from "../ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { use, useEffect } from "react";
 
 const FormSchema = z.object({
-  firstName: z.string().min(2, {
+  accNum: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
-  lastName: z.string().min(2, {
+  ifsc: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
-  dob: z.date({
-    message: "Username must be at least 2 characters.",
+  bankName: z.string({
+    message: "Can't be empty",
   }),
-  email: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  phoneNo: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+  bankHolderName: z.string().min(2, {
+    message: "Wrong email format",
   }),
 });
 
 interface PersonalProps {
-  handleBack: () => void;
   handleNext: () => void;
+  handleBack: () => void;
+  formValues: any;
+  setFormValues: any;
 }
 
-export const Account = ({ handleBack, handleNext }: PersonalProps) => {
+export const Account = ({ handleBack, handleNext, formValues, setFormValues }: PersonalProps) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: formValues
   });
 
+
+  useEffect(() => {
+    console.log("formValues", formValues
+    );
+  }, []
+  );
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    setFormValues({...formValues, ...data});
     handleNext();
-    handleBack();
-    console.log(data);
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col gap-8">
-        <div className="flex justify-between gap-8">
-          <FormField
-            control={form.control}
-            name="firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>First Name</FormLabel>
-                <FormControl>
-                  <Input {...field} className="w-[240px]"/>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Last Name</FormLabel>
-                <FormControl>
-                  <Input {...field}  className="w-[240px]"/>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="flex justify-between items-center gap-8">
-          <FormField
-            control={form.control}
-            name="dob"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Date of birth</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="phoneNo"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone No</FormLabel>
-                <FormControl>
-                  <Input {...field}  className="w-[240px]"/>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full flex flex-col gap-8"
+      >
         <FormField
           control={form.control}
-          name="email"
+          name="accNum"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Account Number</FormLabel>
               <FormControl>
-                <Input {...field}  className="w-[240px]"/>
+                <Input {...field} placeholder="John" className="w-full" />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button type="submit">Next</Button>
+        <FormField
+          control={form.control}
+          name="ifsc"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>IFSC Code</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Doe" className="w-full" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="bankName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Bank Name</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder="999999"
+                  type="number"
+                  className="w-full"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="bankHolderName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Bank Holder Name</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder="johndoe@email.com"
+                  className="w-full"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex justify-between">
+          <Button type="button" onClick={handleBack} variant="secondary">
+            Back
+          </Button>
+          <Button type="submit" className="self-end">
+            Next
+          </Button>
+        </div>
       </form>
     </Form>
   );
