@@ -6,40 +6,44 @@ import { Personal } from "../personal";
 import { Account } from "../business";
 import { Preferences } from "../preserences";
 
-function getStepContent(step: number, handleBack: () => void, handleNext: () => void, formValues: any, setFormValues: any) {
+export interface FormValues {
+    [key: string]: string | Date;
+}
+
+function getStepContent(
+    step: number,
+    handleBack: () => void,
+    handleNext: () => void,
+    formValues: FormValues,
+    setFormValues: React.Dispatch<React.SetStateAction<FormValues>>
+): JSX.Element | string {
     switch (step) {
         case 1:
-            return <Personal handleNext={handleNext} formValues={formValues} setFormValues= {setFormValues}/>;
+            return <Personal handleNext={handleNext} formValues={formValues} setFormValues={setFormValues} />;
         case 2:
-            return <Account handleBack={handleBack} handleNext={handleNext} formValues={formValues} setFormValues= {setFormValues}/>;
+            return <Account handleBack={handleBack} handleNext={handleNext} formValues={formValues} setFormValues={setFormValues} />;
         case 3:
-            return <Preferences handleBack={handleBack} handleNext={handleNext} formValues={formValues} setFormValues= {setFormValues}/>;
+            return <Preferences handleBack={handleBack} handleNext={handleNext} formValues={formValues} setFormValues={setFormValues} />;
         default:
             return "Unknown step";
     }
 }
 
-const HookMultiStepForm = () => {
-  const [activeStep, setActiveStep] = useState(1);
-  const [formValues, setFormValues] = useState({});
+const HookMultiStepForm: React.FC = () => {
+    const [activeStep, setActiveStep] = useState<number>(1);
+    const [formValues, setFormValues] = useState<FormValues>({});
 
-  const handleNext = async () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
+    const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
+    const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-
-  return (
-    <div className="flex min-h-screen justify-center items-center">
-      <div className="w-1/3">
-        <StepperIndicator activeStep={activeStep} />
-            {getStepContent(activeStep, handleBack, handleNext, formValues, setFormValues)}
-      </div>
-    </div>
-  );
+    return (
+        <div className="flex min-h-screen justify-center items-center">
+            <div className="w-1/3">
+                <StepperIndicator activeStep={activeStep} />
+                {getStepContent(activeStep, handleBack, handleNext, formValues, setFormValues)}
+            </div>
+        </div>
+    );
 };
 
 export default HookMultiStepForm;

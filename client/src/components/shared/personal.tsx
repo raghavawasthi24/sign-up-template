@@ -18,7 +18,7 @@ import { Calendar } from "../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useEffect } from "react";
+import { FormValues } from "./hook-mutistep";
 
 const FormSchema = z.object({
   firstName: z.string().min(2, {
@@ -40,8 +40,8 @@ const FormSchema = z.object({
 
 interface PersonalProps {
   handleNext: () => void;
-  formValues: any;
-  setFormValues: any;
+  formValues: FormValues,
+  setFormValues: React.Dispatch<React.SetStateAction<FormValues>>
 }
 
 export const Personal = ({ handleNext,formValues, setFormValues  }: PersonalProps) => {
@@ -54,12 +54,6 @@ export const Personal = ({ handleNext,formValues, setFormValues  }: PersonalProp
     setFormValues({...formValues, ...data});
     handleNext();
   }
-
-  useEffect(() => {
-    console.log("formValues", formValues
-    );
-  }, []
-  );
 
   return (
     <Form {...form}>

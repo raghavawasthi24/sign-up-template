@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
-import { useEffect } from "react";
+import { FormValues } from "./hook-mutistep";
 
 const FormSchema = z.object({
   accNum: z.string().min(2, {
@@ -33,8 +33,8 @@ const FormSchema = z.object({
 interface PersonalProps {
   handleNext: () => void;
   handleBack: () => void;
-  formValues: any;
-  setFormValues: any;
+  formValues: FormValues,
+  setFormValues: React.Dispatch<React.SetStateAction<FormValues>>
 }
 
 export const Account = ({ handleBack, handleNext, formValues, setFormValues }: PersonalProps) => {
@@ -43,12 +43,6 @@ export const Account = ({ handleBack, handleNext, formValues, setFormValues }: P
     defaultValues: formValues
   });
 
-
-  useEffect(() => {
-    console.log("formValues", formValues
-    );
-  }, []
-  );
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setFormValues({...formValues, ...data});
     handleNext();

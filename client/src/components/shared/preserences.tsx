@@ -20,7 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { FormValues } from "./hook-mutistep";
 
 const FormSchema = z.object({
   relocation: z.string({
@@ -40,13 +41,12 @@ const FormSchema = z.object({
 interface PersonalProps {
   handleNext: () => void;
   handleBack: () => void;
-  formValues: any;
-  setFormValues: any;
+  formValues: FormValues,
+  setFormValues: React.Dispatch<React.SetStateAction<FormValues>>
 }
 
 export const Preferences = ({
   handleBack,
-  handleNext,
   formValues,
   setFormValues,
 }: PersonalProps) => {
@@ -54,25 +54,21 @@ export const Preferences = ({
     resolver: zodResolver(FormSchema),
   });
 
-  useEffect(() => {
-    console.log("formValues", formValues);
-  }, []);
+ const router = useRouter();
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setFormValues({ ...formValues, ...data });
 
-    fetch("http://localhost:5001/", {
+    fetch("https://sign-up-template.onrender.com", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(formValues),
         })
-        .then((res) => res.json())
-        .then((data) => console.log(data))
+        .then(() => router.push("/success"))
         .catch((err) => console.log(err
         ));
-    handleNext();
   }
 
   return (
