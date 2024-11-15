@@ -4,7 +4,16 @@ export interface UserSchema extends Document {
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
-  gender: string;
   dob: Date;
+  phoneNo: string;
+
+  accNum: string;
+  ifsc: string;
+  bankHolderName: string;
+  bankName: string;
+
+  relocation: string;
+  noticePeriod: string;
+  hearAboutUs: string;
+  currentLocation: string;
 }

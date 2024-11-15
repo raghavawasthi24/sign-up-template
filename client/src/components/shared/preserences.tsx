@@ -23,7 +23,7 @@ import {
 import { useEffect } from "react";
 
 const FormSchema = z.object({
-  relocation: z.boolean({
+  relocation: z.string({
     message: "Username must be at least 2 characters.",
   }),
   noticePeriod: z.string().min(2, {
@@ -60,8 +60,19 @@ export const Preferences = ({
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setFormValues({ ...formValues, ...data });
+
+    fetch("http://localhost:5001/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formValues),
+        })
+        .then((res) => res.json())
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err
+        ));
     handleNext();
-    console.log(data);
   }
 
   return (

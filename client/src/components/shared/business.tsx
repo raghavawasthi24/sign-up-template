@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 
 const FormSchema = z.object({
   accNum: z.string().min(2, {
