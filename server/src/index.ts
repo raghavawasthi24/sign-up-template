@@ -17,9 +17,9 @@ app.use(cors());
 // app.use(`/${process.env.VERSION}`, require("./routes/index"));
 
 app.get("/", (req: Request, res: Response) => {
-    const obj = req.body;
+    // const obj = req.body;
 
-    UserModel.create(obj);
+    // UserModel.create(obj);
 
     res.status(200).json({
         message: "Successfully Saved!",
