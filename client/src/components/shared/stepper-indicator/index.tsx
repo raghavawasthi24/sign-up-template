@@ -9,7 +9,7 @@ interface StepperIndicatorProps {
 
 const StepperIndicator = ({ activeStep }: StepperIndicatorProps) => {
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center mb-8">
       {[1, 2, 3].map((step) => (
         <Fragment key={step}>
           <div

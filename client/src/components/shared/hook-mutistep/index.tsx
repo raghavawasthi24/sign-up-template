@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import StepperIndicator from "../stepper-indicator";
 import { Personal } from "../personal";
 import { Account } from "../business";
@@ -19,21 +19,9 @@ function getStepContent(step: number, handleBack: () => void, handleNext: () => 
     }
 }
 
-
 const HookMultiStepForm = () => {
   const [activeStep, setActiveStep] = useState(1);
-  const [erroredInputName, setErroredInputName] = useState("");
   const [formValues, setFormValues] = useState({});
-  // focus errored input on submit
-  useEffect(() => {
-    const erroredInputElement =
-      document.getElementsByName(erroredInputName)?.[0];
-    if (erroredInputElement instanceof HTMLInputElement) {
-      erroredInputElement.focus();
-      setErroredInputName("");
-    }
-  }, [erroredInputName]);
-
 
   const handleNext = async () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

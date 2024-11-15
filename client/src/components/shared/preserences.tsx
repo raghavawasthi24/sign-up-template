@@ -44,19 +44,22 @@ interface PersonalProps {
   setFormValues: any;
 }
 
-export const Preferences = ({ handleBack, handleNext, formValues, setFormValues }: PersonalProps) => {
+export const Preferences = ({
+  handleBack,
+  handleNext,
+  formValues,
+  setFormValues,
+}: PersonalProps) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
   useEffect(() => {
-    console.log("formValues", formValues
-    );
-  }, []
-  );
+    console.log("formValues", formValues);
+  }, []);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    setFormValues({...formValues, ...data});
+    setFormValues({ ...formValues, ...data });
     handleNext();
     console.log(data);
   }
