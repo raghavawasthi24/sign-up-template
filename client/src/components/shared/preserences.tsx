@@ -22,27 +22,26 @@ import {
 } from "../ui/select";
 import { useRouter } from "next/navigation";
 import { FormValues } from "./hook-mutistep";
+import { useState } from "react";
 
 const FormSchema = z.object({
-  relocation: z.string({
-    message: "Username must be at least 2 characters.",
-  }),
+  relocation: z.string(),
   noticePeriod: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+    message: "Please enter notice period.",
   }),
   hearAboutUs: z.string({
     message: "Can't be empty",
   }),
   currentLocation: z.string().min(2, {
-    message: "Wrong email format",
+    message: "Enter your current location.",
   }),
 });
 
 interface PersonalProps {
   handleNext: () => void;
   handleBack: () => void;
-  formValues: FormValues,
-  setFormValues: React.Dispatch<React.SetStateAction<FormValues>>
+  formValues: FormValues;
+  setFormValues: React.Dispatch<React.SetStateAction<FormValues>>;
 }
 
 export const Preferences = ({
@@ -54,25 +53,31 @@ export const Preferences = ({
     resolver: zodResolver(FormSchema),
   });
 
- const router = useRouter();
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setFormValues({ ...formValues, ...data });
+    setLoading(true);
 
     fetch("https://sign-up-template.onrender.com", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formValues),
-        })
-        .then(() => router.push("/success"))
-        .catch((err) => console.log(err
-        ));
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formValues),
+    })
+      .then(() => {
+        router.push("/success");
+        setLoading(false);
+      })
+      .catch((err) => console.log(err));
   }
 
   return (
     <Form {...form}>
+      <h3 className="font-bold text-center text-lg">Preferences</h3>
+
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full flex flex-col gap-8"
@@ -86,7 +91,7 @@ export const Preferences = ({
               <Select onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
+                    <SelectValue placeholder="Please Select" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -105,7 +110,7 @@ export const Preferences = ({
             <FormItem>
               <FormLabel>What is your notice period?</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="John" className="w-full" />
+                <Input {...field} placeholder="" className="w-full" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -119,7 +124,7 @@ export const Preferences = ({
             <FormItem>
               <FormLabel>Where did you hear about us?</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Doe" className="w-full" />
+                <Input {...field} placeholder="" className="w-full" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -133,12 +138,7 @@ export const Preferences = ({
             <FormItem>
               <FormLabel>Where are you currently residing?</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  placeholder="999999"
-                  type="number"
-                  className="w-full"
-                />
+                <Input {...field} className="w-full" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -146,11 +146,16 @@ export const Preferences = ({
         />
 
         <div className="flex justify-between">
-          <Button type="button" onClick={handleBack} variant="secondary">
+          <Button
+            type="button"
+            onClick={handleBack}
+            disabled={loading}
+            variant="secondary"
+          >
             Back
           </Button>
-          <Button type="submit" className="self-end">
-            Next
+          <Button type="submit" className="self-end" disabled={loading}>
+            {loading ? "Submitting..." : "Submit"}
           </Button>
         </div>
       </form>

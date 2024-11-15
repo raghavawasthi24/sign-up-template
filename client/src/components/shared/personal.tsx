@@ -21,22 +21,30 @@ import { cn } from "@/lib/utils";
 import { FormValues } from "./hook-mutistep";
 
 const FormSchema = z.object({
-  firstName: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  lastName: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  dob: z.date({
-    message: "Can't be empty",
-  }),
-  email: z.string().min(2, {
-    message: "Wrong email format",
-  }),
-  phoneNo: z.string().min(10, {
-    message: "Username must be at least 2 characters.",
-  }),
+  firstName: z.string()
+    .min(2, { message: "First name must be at least 2 characters long." })
+    .max(50, { message: "First name must be 50 characters or fewer." }),
+  
+  lastName: z.string()
+    .min(2, { message: "Last name must be at least 2 characters long." })
+    .max(50, { message: "Last name must be 50 characters or fewer." }),
+  
+  dob: z.preprocess((arg) => {
+    if (typeof arg === "string" || arg instanceof Date) {
+      return new Date(arg);
+    }
+  }, z.date({ message: "Please provide a valid date of birth." })),
+  
+  email: z.string()
+    .email({ message: "Please enter a valid email address." })
+    .max(100, { message: "Email must be 100 characters or fewer." }),
+  
+  phoneNo: z.string()
+    .length(10, { message: "Phone number must be exactly 10 digits." })
+    .regex(/^[0-9]+$/, { message: "Phone number must contain only numbers." })
 });
+
+
 
 interface PersonalProps {
   handleNext: () => void;
@@ -58,6 +66,8 @@ export const Personal = ({ handleNext,formValues, setFormValues  }: PersonalProp
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col gap-8">
+        
+        <h3 className="font-bold text-center text-lg">Personal Details</h3>
         <div className="flex justify-between gap-8">
           <FormField
             control={form.control}

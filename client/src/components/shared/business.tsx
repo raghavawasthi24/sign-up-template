@@ -17,39 +17,46 @@ import { FormValues } from "./hook-mutistep";
 
 const FormSchema = z.object({
   accNum: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+    message: "Wrong account Number.",
   }),
-  ifsc: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+  ifsc: z.string().min(10, {
+    message: "Must be greater than 10.",
   }),
-  bankName: z.string({
-    message: "Can't be empty",
+  bankName: z.string().min(2, {
+    message: "Can't be empty.",
   }),
   bankHolderName: z.string().min(2, {
-    message: "Wrong email format",
+    message: "Enter your bank holder name.",
   }),
 });
 
 interface PersonalProps {
   handleNext: () => void;
   handleBack: () => void;
-  formValues: FormValues,
-  setFormValues: React.Dispatch<React.SetStateAction<FormValues>>
+  formValues: FormValues;
+  setFormValues: React.Dispatch<React.SetStateAction<FormValues>>;
 }
 
-export const Account = ({ handleBack, handleNext, formValues, setFormValues }: PersonalProps) => {
+export const Account = ({
+  handleBack,
+  handleNext,
+  formValues,
+  setFormValues,
+}: PersonalProps) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: formValues
+    defaultValues: formValues,
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    setFormValues({...formValues, ...data});
+    setFormValues({ ...formValues, ...data });
     handleNext();
   }
 
   return (
     <Form {...form}>
+      <h3 className="font-bold text-center text-lg">Account Details</h3>
+
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full flex flex-col gap-8"
@@ -61,7 +68,12 @@ export const Account = ({ handleBack, handleNext, formValues, setFormValues }: P
             <FormItem>
               <FormLabel>Account Number</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="John" className="w-full" />
+                <Input
+                  {...field}
+                  placeholder="0000"
+                  type="number"
+                  className="w-full"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -75,7 +87,12 @@ export const Account = ({ handleBack, handleNext, formValues, setFormValues }: P
             <FormItem>
               <FormLabel>IFSC Code</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Doe" className="w-full" />
+                <Input
+                  {...field}
+                  placeholder="00000"
+                  type="number"
+                  className="w-full"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -89,12 +106,7 @@ export const Account = ({ handleBack, handleNext, formValues, setFormValues }: P
             <FormItem>
               <FormLabel>Bank Name</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  placeholder="999999"
-                  type="number"
-                  className="w-full"
-                />
+                <Input {...field} placeholder="xyz" className="w-full" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -108,11 +120,7 @@ export const Account = ({ handleBack, handleNext, formValues, setFormValues }: P
             <FormItem>
               <FormLabel>Bank Holder Name</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  placeholder="johndoe@email.com"
-                  className="w-full"
-                />
+                <Input {...field} placeholder="xyz" className="w-full" />
               </FormControl>
               <FormMessage />
             </FormItem>
