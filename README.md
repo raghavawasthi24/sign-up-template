@@ -1,0 +1,1 @@
+Raghav, use this npx concurrently --kill-others -n "DB,BACKEND Server,FRONTEND Server,FRONTEND Tests" -c "yelow,red,blue,green" -p "[{time} >> {name}]" "node __test__/mongo-memory.js" "sleep 5 && npm run automation" "cd ../frontend && npm run build && npm run automation" "sleep 30 && cd ../frontend && npm run playwright" Disconnect the mongodb and run this command in backend.
